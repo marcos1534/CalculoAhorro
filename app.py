@@ -5,6 +5,53 @@ import pandas as pd
 # 1. Configuración de página
 st.set_page_config(page_title="Finanzas & Arcade", page_icon="🔐", layout="wide")
 
+# --- ESTILOS CSS PREMIUM (DARK MODE FORZADO) ---
+st.markdown("""
+    <style>
+    /* Fondo General */
+    .stApp {
+        background-color: #0E1117;
+        color: #FAFAFA;
+    }
+    
+    /* Inputs y Cajas de Texto */
+    .stTextInput > div > div > input {
+        background-color: #262730;
+        color: white;
+        border-radius: 10px;
+        border: 1px solid #41444C;
+    }
+    
+    /* Botones Principales (Verde Neón) */
+    div.stButton > button {
+        background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+        color: black;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        padding: 0.5rem 1rem;
+        transition: transform 0.2s;
+    }
+    div.stButton > button:hover {
+        transform: scale(1.05);
+        color: black;
+    }
+
+    /* Títulos con Degradado */
+    h1 {
+        background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    /* Sidebar (Menú Lateral) */
+    [data-testid="stSidebar"] {
+        background-color: #161B22;
+        border-right: 1px solid #30363D;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # 2. BLOQUE CSS PARA OCULTAR MENÚS Y BOTONES DE GITHUB
 hide_st_style = """
             <style>
@@ -78,31 +125,38 @@ if 'logged_in' not in st.session_state:
 if not st.session_state['logged_in']:
     login_page()
 else:
-    # BARRA LATERAL (Logout y Admin)
+    # --- MENÚ DE NAVEGACIÓN (Importante para móvil) ---
     st.sidebar.title(f"👤 {st.session_state['username']}")
     
-    if st.button("Cerrar Sesión"):
+    if st.sidebar.button("Cerrar Sesión"):
         st.session_state['logged_in'] = False
         st.rerun()
-        
-    st.title("Panel Principal")
-    st.info("👈 ¡Usa el menú lateral para navegar!")
 
-    # --- PANEL DE ADMIN ---
-    if st.session_state['username'] == 'admin':
-        st.sidebar.markdown("---")
-        st.sidebar.header("🛠️ Panel Admin")
-        
-        if st.sidebar.checkbox("Ver Usuarios Registrados"):
-            st.subheader("Base de Datos de Usuarios")
-            users = db.view_all_users()
-            st.table(pd.DataFrame(users, columns=["Usuarios"]))
-            
-        if st.sidebar.button("Borrar TODOS los Récords"):
-            db.delete_all_scores()
-            st.sidebar.success("Tabla de puntuaciones reseteada.")
+    # --- PÁGINA DE BIENVENIDA (Dashboard) ---
+    st.title("Panel Principal")
+    
+    # MENSAJE ESPECIAL PARA MÓVIL
+    st.success(f"¡Hola, {st.session_state['username']}! Has iniciado sesión correctamente.")
+    
+    st.info("""
+    📱 **¿Estás en el móvil?**
+    Toca la flecha **(>)** en la esquina superior izquierda para abrir el menú y ver las herramientas.
+    """)
+    
+    # Tarjetas de acceso rápido (Para no depender solo del sidebar)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        ### 📈 Mercado
+        Consulta precios de acciones y criptos en tiempo real.
+        """)
+    with col2:
+        st.markdown("""
+        ### 🕹️ Arcade
+        Juega a clásicos como Pac-Man y Donkey Kong.
+        """)
 
     st.markdown("---")
     st.write("### Novedades")
-    st.write("- 🏆 **Ranking Global:** Ahora puedes guardar tus puntuaciones en la Zona Arcade.")
-    st.write("- 👑 **Top 5:** Compite por aparecer en el tablón de honor.")
+    st.write("- 🏆 **Ranking Global:** Ahora puedes guardar tus puntuaciones.")
+    st.write("- 📱 **Soporte Móvil:** Controles táctiles en los juegos.")
