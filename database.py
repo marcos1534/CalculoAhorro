@@ -12,7 +12,8 @@ def check_hashes(password, hashed_text):
 
 # --- CREACIÓN DE TABLAS ---
 def create_tables():
-    conn = sqlite3.connect('data.db')
+    # check_same_thread=False ayuda a evitar errores en la nube de Streamlit
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     # Tabla Usuarios
     c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT PRIMARY KEY, password TEXT)')
@@ -23,7 +24,7 @@ def create_tables():
 
 # --- GESTIÓN USUARIOS ---
 def add_userdata(username, password):
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     try:
         c.execute('INSERT INTO userstable(username, password) VALUES (?,?)', (username, password))
@@ -35,7 +36,7 @@ def add_userdata(username, password):
         conn.close()
 
 def login_user(username, password):
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     c.execute('SELECT * FROM userstable WHERE username =? AND password = ?', (username, password))
     data = c.fetchall()
@@ -43,7 +44,7 @@ def login_user(username, password):
     return data
 
 def view_all_users():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     c.execute('SELECT username FROM userstable')
     data = c.fetchall()
@@ -52,14 +53,14 @@ def view_all_users():
 
 # --- GESTIÓN PUNTUACIONES ---
 def add_score(game, username, score):
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     c.execute('INSERT INTO scores(game, username, score) VALUES (?,?,?)', (game, username, score))
     conn.commit()
     conn.close()
 
 def get_top_5_scores(game):
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     # Selecciona los 5 mejores ordenados de mayor a menor
     c.execute('SELECT username, score, date FROM scores WHERE game=? ORDER BY score DESC LIMIT 5', (game,))
@@ -68,7 +69,7 @@ def get_top_5_scores(game):
     return data
 
 def delete_all_scores():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data.db', check_same_thread=False)
     c = conn.cursor()
     c.execute('DELETE FROM scores')
     conn.commit()

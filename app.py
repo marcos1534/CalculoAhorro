@@ -2,9 +2,21 @@ import streamlit as st
 import database as db
 import pandas as pd
 
+# 1. Configuración de página
 st.set_page_config(page_title="Finanzas & Arcade", page_icon="🔐", layout="wide")
 
-# Inicializar DB al arrancar
+# 2. BLOQUE CSS PARA OCULTAR MENÚS Y BOTONES DE GITHUB
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# 3. Inicializar DB al arrancar
+# (Si aquí te fallaba antes es porque database.py no tenía esta función actualizada)
 db.create_tables()
 
 def login_page():
@@ -34,8 +46,9 @@ def login_page():
             new_user = st.text_input("Elige Usuario")
             new_password = st.text_input("Elige Contraseña", type='password')
             if st.button("Crear Cuenta", use_container_width=True):
-                if new_user == "admin":
-                    st.warning("El nombre 'admin' está reservado. Usa otro.")
+                # Protección simple para que nadie se registre como admin excepto tú (si lo desbloqueas)
+                if new_user.lower() == "admin":
+                     st.warning("El usuario 'admin' está reservado.")
                 else:
                     hashed_new_password = db.make_hashes(new_password)
                     exito = db.add_userdata(new_user, hashed_new_password)
@@ -62,10 +75,6 @@ else:
     st.info("👈 ¡Usa el menú lateral para navegar!")
 
     # --- PANEL DE ADMIN ---
-    # Para ser admin, debes registrarte con el usuario "admin" (o crearlo manualmente en DB)
-    # Nota: En el registro arriba bloqueé crear 'admin' para que solo tú puedas hacerlo si quitas el bloqueo temporalmente
-    # O simplemente cambia la condición aquí abajo a tu usuario real.
-    
     if st.session_state['username'] == 'admin':
         st.sidebar.markdown("---")
         st.sidebar.header("🛠️ Panel Admin")
