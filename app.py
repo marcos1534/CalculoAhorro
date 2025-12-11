@@ -15,39 +15,10 @@ st.set_page_config(
 db.create_tables()
 
 # --- 3. ESTILOS CSS (SOLO ESTÉTICA, SIN OCULTAR MENÚS) ---
-st.markdown("""
-    <style>
-    /* Ocultamos solo el pie de página de "Made with Streamlit" para limpiar */
-    footer {visibility: hidden;}
-    
-    /* Estilo Premium para Botones (Degradado Verde/Azul) */
-    div.stButton > button {
-        background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
-        color: black;
-        font-weight: bold;
-        border: none;
-        border-radius: 12px;
-        padding: 0.5rem 1rem;
-        transition: transform 0.2s;
-    }
-    div.stButton > button:hover {
-        transform: scale(1.05);
-        color: black;
-    }
-
-    /* Títulos con Degradado */
-    h1 {
-        background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    /* Input fields más bonitos */
-    .stTextInput > div > div > input {
-        border-radius: 10px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# --- TEMA ---
+tema = st.sidebar.radio("Tema Visual:", ["Claro", "Oscuro"], horizontal=True)
+from utils import styles
+st.markdown(styles.get_css(tema), unsafe_allow_html=True)
 
 # --- 4. FUNCIÓN DE LA PÁGINA DE LOGIN ---
 def login_page():
