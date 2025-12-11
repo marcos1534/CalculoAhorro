@@ -5,24 +5,16 @@ import pandas as pd
 # 1. Configuración de página
 st.set_page_config(page_title="Finanzas & Arcade", page_icon="🔐", layout="wide")
 
-# --- ESTILOS CSS PREMIUM (DARK MODE FORZADO) ---
+# --- ESTILOS CSS PERSONALIZADOS ---
+# (Solo retocamos botones y ocultamos menús, el color de fondo y texto lo maneja config.toml)
 st.markdown("""
     <style>
-    /* Fondo General */
-    .stApp {
-        background-color: #0E1117;
-        color: #FAFAFA;
-    }
+    /* Ocultar menú de hamburguesa y pie de página de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     
-    /* Inputs y Cajas de Texto */
-    .stTextInput > div > div > input {
-        background-color: #262730;
-        color: white;
-        border-radius: 10px;
-        border: 1px solid #41444C;
-    }
-    
-    /* Botones Principales (Verde Neón) */
+    /* Estilo Premium para Botones (Degradado Verde/Azul) */
     div.stButton > button {
         background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
         color: black;
@@ -37,17 +29,11 @@ st.markdown("""
         color: black;
     }
 
-    /* Títulos con Degradado */
+    /* Títulos con Degradado (Efecto visual extra) */
     h1 {
         background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-    }
-    
-    /* Sidebar (Menú Lateral) */
-    [data-testid="stSidebar"] {
-        background-color: #161B22;
-        border-right: 1px solid #30363D;
     }
     </style>
     """, unsafe_allow_html=True)
