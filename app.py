@@ -10,16 +10,27 @@ st.set_page_config(
     initial_sidebar_state="expanded"  # <--- Añade esto
 )
 
-# --- ESTILOS CSS PERSONALIZADOS ---
-# (Solo retocamos botones y ocultamos menús, el color de fondo y texto lo maneja config.toml)
+# --- ESTILOS CSS PERSONALIZADOS (SOLUCIÓN MENÚ) ---
 st.markdown("""
     <style>
-    /* Ocultar menú de hamburguesa y pie de página de Streamlit */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* 1. Ocultar los 3 puntos de la derecha (stToolbar) y el footer */
+    [data-testid="stToolbar"] {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    footer {
+        visibility: hidden !important;
+        display: none !important;
+    }
     
-    /* Estilo Premium para Botones (Degradado Verde/Azul) */
+    /* 2. ASEGURAR que el botón de desplegar el menú (la flecha >) sea visible */
+    [data-testid="collapsedControl"] {
+        visibility: visible !important;
+        display: block !important;
+        color: #00C9FF !important; /* Lo ponemos azul neón para que se vea bien */
+    }
+    
+    /* 3. Estilo de Botones Premium */
     div.stButton > button {
         background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
         color: black;
@@ -34,7 +45,7 @@ st.markdown("""
         color: black;
     }
 
-    /* Títulos con Degradado (Efecto visual extra) */
+    /* 4. Títulos con Degradado */
     h1 {
         background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
         -webkit-background-clip: text;
