@@ -1,10 +1,11 @@
 import streamlit as st
 import database as db
+import pandas as pd
 
 st.set_page_config(page_title="Finanzas & Arcade", page_icon="🔐", layout="wide")
 
-# Inicializar DB
-db.create_usertable()
+# Inicializar DB al arrancar
+db.create_tables()
 
 def login_page():
     col1, col2, col3 = st.columns([1,2,1])
@@ -33,22 +34,52 @@ def login_page():
             new_user = st.text_input("Elige Usuario")
             new_password = st.text_input("Elige Contraseña", type='password')
             if st.button("Crear Cuenta", use_container_width=True):
-                db.add_userdata(new_user, db.make_hashes(new_password))
-                st.success("Cuenta creada. Ahora inicia sesión.")
+                if new_user == "admin":
+                    st.warning("El nombre 'admin' está reservado. Usa otro.")
+                else:
+                    hashed_new_password = db.make_hashes(new_password)
+                    exito = db.add_userdata(new_user, hashed_new_password)
+                    if exito:
+                        st.success("Cuenta creada. Ahora inicia sesión.")
+                    else:
+                        st.error("Ese usuario ya existe.")
 
+# --- LÓGICA PRINCIPAL ---
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
 if not st.session_state['logged_in']:
     login_page()
 else:
-    st.title(f"Hola, {st.session_state['username']} 👋")
-    st.info("👈 ¡Bienvenido! Usa el menú lateral para navegar por las diferentes herramientas y juegos.")
-    
-    st.markdown("### 📌 Novedades de la versión")
-    st.write("- Nuevo simulador fiscal ajustado a 2025.")
-    st.write("- Sala de Arcade ampliada con clásicos: Pac-Man, Tetris, DK y Space Invaders.")
+    # BARRA LATERAL (Logout y Admin)
+    st.sidebar.title(f"👤 {st.session_state['username']}")
     
     if st.button("Cerrar Sesión"):
         st.session_state['logged_in'] = False
         st.rerun()
+        
+    st.title("Panel Principal")
+    st.info("👈 ¡Usa el menú lateral para navegar!")
+
+    # --- PANEL DE ADMIN ---
+    # Para ser admin, debes registrarte con el usuario "admin" (o crearlo manualmente en DB)
+    # Nota: En el registro arriba bloqueé crear 'admin' para que solo tú puedas hacerlo si quitas el bloqueo temporalmente
+    # O simplemente cambia la condición aquí abajo a tu usuario real.
+    
+    if st.session_state['username'] == 'admin':
+        st.sidebar.markdown("---")
+        st.sidebar.header("🛠️ Panel Admin")
+        
+        if st.sidebar.checkbox("Ver Usuarios Registrados"):
+            st.subheader("Base de Datos de Usuarios")
+            users = db.view_all_users()
+            st.table(pd.DataFrame(users, columns=["Usuarios"]))
+            
+        if st.sidebar.button("Borrar TODOS los Récords"):
+            db.delete_all_scores()
+            st.sidebar.success("Tabla de puntuaciones reseteada.")
+
+    st.markdown("---")
+    st.write("### Novedades")
+    st.write("- 🏆 **Ranking Global:** Ahora puedes guardar tus puntuaciones en la Zona Arcade.")
+    st.write("- 👑 **Top 5:** Compite por aparecer en el tablón de honor.")
