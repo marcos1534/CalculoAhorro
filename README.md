@@ -43,8 +43,8 @@ Sigue estos pasos para ejecutar el proyecto en tu ordenador:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://github.com/TU_USUARIO/TU_REPOSITORIO.git](https://github.com/TU_USUARIO/TU_REPOSITORIO.git)
-    cd TU_REPOSITORIO
+    git clone [https://github.com/TU_USUARIO/TU_REPOSITORIO.git](https://github.com//marcos1534/CalculoAhorro.git)
+    cd CalculoAhorro
     ```
 
 2.  **Crear un entorno virtual (Recomendado):**
