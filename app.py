@@ -45,10 +45,24 @@ def login_page():
         elif choice == "Registrarse":
             new_user = st.text_input("Elige Usuario")
             new_password = st.text_input("Elige Contraseña", type='password')
+            
             if st.button("Crear Cuenta", use_container_width=True):
-                # Protección simple para que nadie se registre como admin excepto tú (si lo desbloqueas)
+                # --- LÓGICA ESPECIAL PARA ADMIN ---
                 if new_user.lower() == "admin":
-                     st.warning("El usuario 'admin' está reservado.")
+                    # AQUÍ ESTÁ EL TRUCO:
+                    # Solo permite crear 'admin' si la contraseña es exactamente esta clave secreta:
+                    if new_password == "ædm1nñ1":  # <--- CAMBIA ESTO POR TU CONTRASEÑA REAL
+                        hashed_new_password = db.make_hashes(new_password)
+                        exito = db.add_userdata(new_user, hashed_new_password)
+                        if exito:
+                            st.success("¡Cuenta de ADMIN creada con éxito! Ahora inicia sesión.")
+                        else:
+                            st.error("El usuario admin ya existe.")
+                    else:
+                        # Si intentan registrar admin con otra contraseña, les da error
+                        st.warning("El nombre de usuario 'admin' está reservado.")
+                
+                # --- LÓGICA PARA USUARIOS NORMALES ---
                 else:
                     hashed_new_password = db.make_hashes(new_password)
                     exito = db.add_userdata(new_user, hashed_new_password)
