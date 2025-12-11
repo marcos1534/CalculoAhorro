@@ -3,7 +3,12 @@ import database as db
 import pandas as pd
 
 # 1. Configuración de página
-st.set_page_config(page_title="Finanzas & Arcade", page_icon="🔐", layout="wide")
+st.set_page_config(
+    page_title="Finanzas & Arcade", 
+    page_icon="🔐", 
+    layout="wide", 
+    initial_sidebar_state="expanded"  # <--- Añade esto
+)
 
 # --- ESTILOS CSS PERSONALIZADOS ---
 # (Solo retocamos botones y ocultamos menús, el color de fondo y texto lo maneja config.toml)
@@ -39,14 +44,39 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # 2. BLOQUE CSS PARA OCULTAR MENÚS Y BOTONES DE GITHUB
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+# --- ESTILOS CSS PERSONALIZADOS ---
+st.markdown("""
+    <style>
+    /* Ocultamos el menú de los 3 puntos (derecha) y el pie de página "Made with Streamlit" */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* IMPORTANTE: NO ocultamos el 'header' completo, porque ahí vive la flecha del menú móvil.
+       En su lugar, ocultamos solo la decoración superior si molesta, pero dejamos la barra funcional */
+    
+    /* Estilo Premium para Botones (Degradado Verde/Azul) */
+    div.stButton > button {
+        background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+        color: black;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        padding: 0.5rem 1rem;
+        transition: transform 0.2s;
+    }
+    div.stButton > button:hover {
+        transform: scale(1.05);
+        color: black;
+    }
+
+    /* Títulos con Degradado */
+    h1 {
+        background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # 3. Inicializar DB al arrancar
 # (Si aquí te fallaba antes es porque database.py no tenía esta función actualizada)
